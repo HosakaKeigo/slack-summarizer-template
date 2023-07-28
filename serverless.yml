@@ -1,0 +1,25 @@
+service: slack-meeting-summary-bot
+frameworkVersion: '3'
+provider:
+  name: aws
+  region: us-west-2
+  runtime: nodejs18.x
+  environment:
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+    GAS_API_URL: ${env:GAS_API_URL}
+package:
+  exclude:
+    - google_apps_script
+functions:
+  slack:
+    handler: src/index.handler
+    timeout: 10
+    events:
+      - http:
+          path: slack/events
+          method: post
+useDotenv: true
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
